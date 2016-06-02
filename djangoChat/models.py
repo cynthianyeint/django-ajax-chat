@@ -4,17 +4,16 @@ from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.contrib.auth.models import User
 import urllib, hashlib, binascii
 
-class Room(models.Model):
+class MessageRoom(models.Model):
 	from_user = models.ManyToManyField(User, related_name='from_user')
 	to_user = models.ManyToManyField(User, related_name='to_user')
-	testing_field = models.CharField(max_length=200)
 	
 class Message(models.Model):
 	user = models.CharField(max_length=200)
 	message = models.TextField(max_length=200)
 	time = models.DateTimeField(auto_now_add=True)
 	gravatar = models.CharField(max_length=300)
-	room = models.ForeignKey(Room, null=False)
+	room = models.ForeignKey(MessageRoom, null=False)
 	
 	def __unicode__(self):
 		return self.user
