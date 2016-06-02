@@ -9,6 +9,8 @@ class Message(models.Model):
 	message = models.TextField(max_length=200)
 	time = models.DateTimeField(auto_now_add=True)
 	gravatar = models.CharField(max_length=300)
+	room = models.ForeignKey(Room, null=False)
+	
 	def __unicode__(self):
 		return self.user
 	# def save(self):
@@ -24,6 +26,7 @@ def generate_avatar(email):
 	a+=hashlib.md5(email.lower()).hexdigest()
 	a+='?d=identicon'
 	return a
+	
 def hash_username(username):
 	a = binascii.crc32(username)
 	return a
@@ -36,3 +39,6 @@ class ChatUser(models.Model):
 	last_accessed = models.DateTimeField(auto_now_add=True)
 	
 User.profile = property(lambda u: ChatUser.objects.get_or_create(user=u,defaults={'gravatar_url':generate_avatar(u.email),'username':u.username,'userID':hash_username(u.username)})[0])
+
+class Room(models.Model):
+	user = models.ManyToManyField(User)
