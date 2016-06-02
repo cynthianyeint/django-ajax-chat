@@ -73,7 +73,8 @@ def chat_api(request):
 		d = json.loads(request.body)
 		msg =  d.get('msg')
 		user = request.user.username
-		gravatar = request.user.profile.gravatar_url
+		# gravatar = request.user.profile.gravatar_url
+		gravatar = request.user.avatar_url
 		m = Message(user=user,message=msg,gravatar=gravatar)
 		m.save()
 
