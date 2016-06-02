@@ -5,7 +5,8 @@ from django.contrib.auth.models import User
 import urllib, hashlib, binascii
 
 class Room(models.Model):
-	user = models.ManyToManyField(User)
+	from_user = models.ManyToManyField(User, related_name='from_user')
+	to_user = models.ManyToManyField(User, related_name='to_user')
 
 class Message(models.Model):
 	user = models.CharField(max_length=200)
