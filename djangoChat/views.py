@@ -73,8 +73,10 @@ def chat_api(request):
 		d = json.loads(request.body)
 
 		room = MessageRoom()
-		room.student_user_id = "2"
-		room.teacher_user_id = "3"
+		room.student_user.user_id = 2
+		room.teacher_user.user_id = 3
+		# room.student_user_id = "2"
+		# room.teacher_user_id = "3"
 		room.save()
 
 		msg =  d.get('msg')
