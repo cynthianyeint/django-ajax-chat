@@ -19,7 +19,9 @@ def index(request):
 	if request.user.username and request.user.profile.is_chat_user:
 		# intial chat json data
 
-		r = Message.objects.order_by('-time')[:20]
+		# r = Message.objects.order_by('-time')[:20]
+		r = Message.objects.filter(room_id=2).order_by('-time')
+
 		res = []
 		for msgs in reversed(r) :
 			res.append({'id':msgs.id,'user':msgs.user,'msg':msgs.message,'time':msgs.time.strftime('%I:%M:%S %p').lstrip('0'),'gravatar':msgs.gravatar})
@@ -75,10 +77,13 @@ def chat_api(request):
 		student_user = User.objects.filter(pk=2).first()
 		teacher_user = User.objects.filter(pk=3).first()
 
-		room = MessageRoom()
-		room.student_user = student_user
-		room.teacher_user = teacher_user
-		room.save()
+		if not MessageRoom.objects.filter(teacher_user=teacher_user, student_user=student_user).exists():
+			room = MessageRoom()
+			room.save()
+			room.teacher_user.add(teacher_user)
+			room.student_user.add(student_user)
+		else:
+			room = MessageRoom.objects.filter(teacher_user=teacher_user, student_user=student_user).first()
 
 		msg =  d.get('msg')
 		user = request.user.username
@@ -95,7 +100,10 @@ def chat_api(request):
 
 
 	# get request
-	r = Message.objects.order_by('-time')[:20]
+
+	# r = Message.objects.order_by('-time')[:20]
+	r = Message.objects.filter(room_id=2).order_by('-time')[:20]
+
 	res = []
 	for msgs in reversed(r) :
 		res.append({'id':msgs.id,'user':msgs.user,'msg':msgs.message,'time':msgs.time.strftime('%I:%M:%S %p').lstrip('0'),'gravatar':msgs.gravatar})
