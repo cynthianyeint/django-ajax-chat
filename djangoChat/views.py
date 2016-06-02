@@ -72,19 +72,25 @@ def chat_api(request):
 	if request.method == 'POST':
 		d = json.loads(request.body)
 
-		student_user = User.objects.filter(pk=2).first()
-		teacher_user = User.objects.filter(pk=3).first()
-
-		room = MessageRoom()
-		room.student_user = student_user
-		room.teacher_user = teacher_user
-		room.save()
+		# student_user = User.objects.filter(pk=2).first()
+		# teacher_user = User.objects.filter(pk=3).first()
+        #
+		# room = MessageRoom()
+		# room.student_user = student_user
+		# room.teacher_user = teacher_user
+		# room.save()
 
 		msg =  d.get('msg')
 		user = request.user.username
 		# gravatar = request.user.profile.gravatar_url
 		gravatar = request.user.avatar_url
-		m = Message(user=user,message=msg,gravatar=gravatar,room = room)
+
+		m = Message()
+		m.user = user
+		m.room = '1'
+		m.message = msg
+		m.gravatar = gravatar
+		# m = Message(user=user,message=msg,gravatar=gravatar,room = room)
 		m.save()
 
 
