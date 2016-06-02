@@ -7,7 +7,8 @@ import urllib, hashlib, binascii
 class Room(models.Model):
 	from_user = models.ManyToManyField(User, related_name='from_user')
 	to_user = models.ManyToManyField(User, related_name='to_user')
-
+	testing_field = models.CharField(max_length=200)
+	
 class Message(models.Model):
 	user = models.CharField(max_length=200)
 	message = models.TextField(max_length=200)
