@@ -5,8 +5,8 @@ from django.contrib.auth.models import User
 import urllib, hashlib, binascii
 
 class MessageRoom(models.Model):
-	from_user = models.ManyToManyField(User, related_name='from_user')
-	to_user = models.ManyToManyField(User, related_name='to_user')
+	student_user = models.ManyToManyField(User, related_name='from_user')
+	teacher_user = models.ManyToManyField(User, related_name='to_user')
 	
 class Message(models.Model):
 	user = models.CharField(max_length=200)
@@ -17,12 +17,11 @@ class Message(models.Model):
 	
 	def __unicode__(self):
 		return self.user
+
 	# def save(self):
 	# 	if self.time == None:
 	# 		self.time = datetime.now()
 	# 	super(Message, self).save()
-
-
 
 
 def generate_avatar(email):
