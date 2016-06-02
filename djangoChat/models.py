@@ -4,11 +4,15 @@ from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.contrib.auth.models import User
 import urllib, hashlib, binascii
 
+class Room(models.Model):
+	user = models.ManyToManyField(User)
+
 class Message(models.Model):
 	user = models.CharField(max_length=200)
 	message = models.TextField(max_length=200)
 	time = models.DateTimeField(auto_now_add=True)
 	gravatar = models.CharField(max_length=300)
+	room = models.ForeignKey(Room, null=False)
 	
 	def __unicode__(self):
 		return self.user
@@ -38,6 +42,3 @@ class ChatUser(models.Model):
 	last_accessed = models.DateTimeField(auto_now_add=True)
 	
 User.profile = property(lambda u: ChatUser.objects.get_or_create(user=u,defaults={'gravatar_url':generate_avatar(u.email),'username':u.username,'userID':hash_username(u.username)})[0])
-
-class Room(models.Model):
-	user = models.ManyToManyField(User)
