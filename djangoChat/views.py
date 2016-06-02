@@ -6,7 +6,7 @@ from django.core.context_processors import csrf
 from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_exempt
 import json
-from djangoChat.models import Message, ChatUser
+from djangoChat.models import Message, ChatUser, MessageRoom
 from django.contrib.auth.models import User
 import datetime
 from django.utils.timezone import now as utcnow
@@ -71,11 +71,17 @@ def logout(request):
 def chat_api(request):
 	if request.method == 'POST':
 		d = json.loads(request.body)
+
+		room = MessageRoom()
+		room.student_user_id = "2"
+		room.teacher_user_id = "3"
+		room.save()
+
 		msg =  d.get('msg')
 		user = request.user.username
 		# gravatar = request.user.profile.gravatar_url
 		gravatar = request.user.avatar_url
-		m = Message(user=user,message=msg,gravatar=gravatar)
+		m = Message(user=user,message=msg,gravatar=gravatar,room = room)
 		m.save()
 
 
