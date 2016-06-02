@@ -72,11 +72,12 @@ def chat_api(request):
 	if request.method == 'POST':
 		d = json.loads(request.body)
 
+		student_user = User.objects.filter(pk=2).first()
+		teacher_user = User.objects.filter(pk=3).first()
+
 		room = MessageRoom()
-		room.student_user.user_id = 2
-		room.teacher_user.user_id = 3
-		# room.student_user_id = "2"
-		# room.teacher_user_id = "3"
+		room.student_user = student_user
+		room.teacher_user = teacher_user
 		room.save()
 
 		msg =  d.get('msg')
