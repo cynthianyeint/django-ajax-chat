@@ -9,7 +9,6 @@ class Message(models.Model):
 	message = models.TextField(max_length=200)
 	time = models.DateTimeField(auto_now_add=True)
 	gravatar = models.CharField(max_length=300)
-	room = models.ForeignKey(Room, null=False)
 	
 	def __unicode__(self):
 		return self.user
