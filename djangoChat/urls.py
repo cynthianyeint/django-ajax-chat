@@ -3,7 +3,7 @@ from django.conf.urls import patterns, url
 from djangoChat import views
 
 urlpatterns = patterns('',
-    url(r'^$', views.index, name='index'),
+    url(r'^(?P<from_user_id>\d+)/(?P<to_user_id>\d+)/$', views.index, name='index'),
     url(r'^login/$',views.login,name='login'),
     url(r'^logout/$',views.logout,name='logout'),
     url(r'^api/$',views.chat_api,name='chat_api'),

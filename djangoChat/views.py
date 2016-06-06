@@ -14,13 +14,28 @@ from django.utils.safestring import mark_safe
 
 
 
-def index(request):
+def index(request,from_user_id=None, to_user_id=None):
 
-	if request.user.username and request.user.profile.is_chat_user:
-		# intial chat json data
+	# if request.user.username and request.user.profile.is_chat_user:
+	# 	# intial chat json data
+	if from_user_id and to_user_id:
+		from_user = User.objects.filter(pk=from_user_id).first()
+		to_user = User.objects.filter(pk=to_user_id).first()
+
+		if not MessageRoom.objects.filter(from_user=from_user,to_user=to_user).exists():
+			room = MessageRoom()
+			room.save()
+			room.from_user.add(from_user)
+			room.to_user.add(to_user)
+			room_id = room.id
+		else:
+			room = MessageRoom.objects.filter(from_user=from_user,to_user=to_user).first()
+			room_id = room.id
+
+		request.session['room_id'] = room_id
 
 		# r = Message.objects.order_by('-time')[:20]
-		r = Message.objects.filter(room_id=2).order_by('-time')
+		r = Message.objects.filter(room_id=room_id).order_by('-time')
 
 		res = []
 		for msgs in reversed(r) :
@@ -71,19 +86,10 @@ def logout(request):
 
 @csrf_exempt
 def chat_api(request):
+	room_id = request.session.get('room_id')
+	room = MessageRoom.objects.filter(pk=room_id).first()
 	if request.method == 'POST':
 		d = json.loads(request.body)
-
-		student_user = User.objects.filter(pk=2).first()
-		teacher_user = User.objects.filter(pk=3).first()
-
-		if not MessageRoom.objects.filter(teacher_user=teacher_user, student_user=student_user).exists():
-			room = MessageRoom()
-			room.save()
-			room.teacher_user.add(teacher_user)
-			room.student_user.add(student_user)
-		else:
-			room = MessageRoom.objects.filter(teacher_user=teacher_user, student_user=student_user).first()
 
 		msg =  d.get('msg')
 		user = request.user.username
@@ -100,9 +106,7 @@ def chat_api(request):
 
 
 	# get request
-
-	# r = Message.objects.order_by('-time')[:20]
-	r = Message.objects.filter(room_id=2).order_by('-time')[:20]
+	r = Message.objects.filter(room_id=room_id).order_by('-time')[:20]
 
 	res = []
 	for msgs in reversed(r) :
