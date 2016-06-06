@@ -5,8 +5,8 @@ from django.contrib.auth.models import User
 import urllib, hashlib, binascii
 
 class MessageRoom(models.Model):
-	student_user = models.ManyToManyField(User, related_name='from_user')
-	teacher_user = models.ManyToManyField(User, related_name='to_user')
+	from_user = models.ManyToManyField(User, related_name='from_user')
+	to_user = models.ManyToManyField(User, related_name='to_user')
 	
 class Message(models.Model):
 	user = models.CharField(max_length=200)
@@ -33,6 +33,7 @@ def generate_avatar(email):
 def hash_username(username):
 	a = binascii.crc32(username)
 	return a
+
 class ChatUser(models.Model):
 	user = models.OneToOneField(User)
 	userID =  models.IntegerField()
